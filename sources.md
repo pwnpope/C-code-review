@@ -1,0 +1,2 @@
+- [finding vulnerabilities in source code the owasp way](https://youtu.be/kpf3UkMc5Y4)
+- [list of safe coding rules + including vulnerabilities and bugs for different languages](https://rules.sonarsource.com)
