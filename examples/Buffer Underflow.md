@@ -50,7 +50,7 @@ int main() {
 
     return 0;
 }
-
+```
 - In this example, the program manually adjusts a pointer to reference memory before the start of an allocated buffer and writes data to it. Since the pointer now targets an invalid memory region preceding the buffer, this results in a buffer underflow. Depending on the system and memory layout, this could lead to corruption of adjacent memory or trigger a segmentation fault.
 
 ---
