@@ -25,30 +25,36 @@
 ## 4 examples
 ```c
 #include <stdio.h>
+#include <stdint.h>
 
 int main() {
-  FILE *fp;
-  char buffer[10];
+    uint8_t buffer[10] = {0};
 
-  fp = fopen("file.txt", "r");
-  if (fp == NULL) {
-    printf("File not found\n");
-    return 1;
-  }
+    // Simulate an invalid pointer arithmetic causing underflow
+    uint8_t *ptr = buffer;
 
-  // read 15 characters from the file into the buffer
-  fread(buffer, 1, 15, fp);
+    // Move the pointer *before* the start of the buffer (UNDERFLOW)
+    ptr -= 5;
 
-  // print the contents of the buffer
-  printf("Buffer contents: %s\n", buffer);
+    // Write to memory before the buffer — undefined behavior!
+    for (int i = 0; i < 5; i++) {
+        ptr[i] = 0x41 + i;  // Writing to invalid memory region
+    }
 
-  fclose(fp);
-  return 0;
+    // This will print from buffer to see if any visible corruption happened
+    printf("Buffer contents: ");
+    for (int i = 0; i < 10; i++) {
+        printf("%c ", buffer[i]);
+    }
+    printf("\n");
+
+    return 0;
 }
-```
-- In this example, the program attempts to read 15 characters from a file into a buffer of size 10. Since the buffer is too small to hold all 15 characters, this will result in a buffer underflow. Depending on the content of the file, this could cause the program to read data from memory locations beyond the beginning of the buffer.
+
+- In this example, the program manually adjusts a pointer to reference memory before the start of an allocated buffer and writes data to it. Since the pointer now targets an invalid memory region preceding the buffer, this results in a buffer underflow. Depending on the system and memory layout, this could lead to corruption of adjacent memory or trigger a segmentation fault.
 
 ---
+
 - Manipulating a string with a negative index: If a program manipulates a string with a negative index, it could cause a buffer underflow. For example, in C, a string can be accessed using array notation, but using a negative index will cause the program to access memory before the beginning of the string.
 ```c
 #include <stdio.h>
